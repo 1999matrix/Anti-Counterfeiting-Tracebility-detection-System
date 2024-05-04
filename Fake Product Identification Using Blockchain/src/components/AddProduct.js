@@ -79,7 +79,7 @@ const AddProduct = ({account, central}) => {
             // console.log(companyContractAddress);
             // console.log(list);
             if(account && companyContractAddress && list){
-                setUpdateStatus("Validate the transaction through your wallet");
+                setUpdateStatus("Validate the Transaction through your wallet");
                 let transaction = await central.addproduct(account, companyContractAddress, list);
                 console.log(transaction);
                 setLoading(true);

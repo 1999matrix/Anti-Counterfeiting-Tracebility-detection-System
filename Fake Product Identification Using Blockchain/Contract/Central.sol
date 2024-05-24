@@ -33,13 +33,7 @@ contract Central {
         return Company(_contractAddress).addProducts(_ownerAddress, _products);
     }
 
-    function checkProduct(address _contractAddress, uint256 _productHashCode)
-        public
-        view
-        returns (string memory)
-    {
-        return Company(_contractAddress).verifyProduct(_productHashCode);
-    }
+    
 
     function retrieve(address _val) public pure returns (address) {
         return _val;

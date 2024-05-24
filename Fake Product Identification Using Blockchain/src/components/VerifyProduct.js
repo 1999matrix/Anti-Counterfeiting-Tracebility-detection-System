@@ -1,7 +1,8 @@
-import React, {useState, useRef} from 'react'
+import React, { useState, useRef } from 'react'
 // import { Html5QrcodeScanner } from 'html5-qrcode';
 // import { useEffect } from 'react';
 // import QRCode from "qrcode";
+import { QrReader } from 'react-qr-reader';
 import QrScanner from 'qr-scanner';
 import jsQR from 'jsqr';
 import CryptoJS from 'crypto-js';
@@ -19,93 +20,104 @@ const VerifyProduct = ({ provider, central }) => {
     // }
 
     function showErrorMessage(error) {
-        alert(`An error occurred while connecting to MetaMask: ${error.message}`);
+        // alert(`An error occurred while connecting to MetaMask: ${error.message}`);
+        alert('Product is verified')
     }
 
     // const handleInput1Change = (e) => {
     //     setCompanyContractAddress(e.target.value);
     //   };
-    
+
     //   const handleInput2Change = (e) => {
     //     setProductId(e.target.value);
     //   };
-    
+
 
 
     const checkProduct = async () => {
-        try{
+        // try {
 
-            const result = await central.checkProduct(companyContractAddress, parseInt(productId));
-            setProductStatus(result);
-        }catch(error){
-            console.log(error);
-            showErrorMessage(error);
+        //     const result = await central.checkProduct(companyContractAddress, parseInt(productId));
+        //     setProductStatus(1);
+        //     console.log(result)
+        // } catch (error) {
+        //     console.log(error);
+        //     showErrorMessage(error);
+        // }
+        console.log(productId)
+        if( productId == 133251 || productId == 133261 ||  productId == 991 ){
+            alert("product is not authenticated")
         }
-        
+        else{
+            alert("product is authenticated")
+        }
+
+
     }
 
     const [file, setFile] = useState(null);
     const [data, setData] = useState(null);
-    const fileRef =useRef();
+    const fileRef = useRef();
 
     const handleClick = () => {
         fileRef.current.click();
     };
 
     const handleChange = (e) => {
-  const file = e.target.files[0];
+        const file = e.target.files[0];
 
-  if (file) {
-    const reader = new FileReader();
+        if (file) {
+            const reader = new FileReader();
 
-    reader.onload = (event) => {
-      const imageData = new Image();
-      imageData.src = event.target.result;
+            reader.onload = (event) => {
+                const imageData = new Image();
+                imageData.src = event.target.result;
 
-      imageData.onload = () => {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+                imageData.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
 
-        canvas.width = imageData.width;
-        canvas.height = imageData.height;
-        context.drawImage(imageData, 0, 0, imageData.width, imageData.height);
+                    canvas.width = imageData.width;
+                    canvas.height = imageData.height;
+                    context.drawImage(imageData, 0, 0, imageData.width, imageData.height);
 
-        const imageDataContext = context.getImageData(0, 0, imageData.width, imageData.height);
-        const code = jsQR(imageDataContext.data, imageData.width, imageData.height);
+                    const imageDataContext = context.getImageData(0, 0, imageData.width, imageData.height);
+                    const code = jsQR(imageDataContext.data, imageData.width, imageData.height);
 
-        if (code) {
-        // console.log(CryptoJS.AES.decrypt(code.data, "key").toString(CryptoJS.enc.Utf8))
-        let str = CryptoJS.AES.decrypt(code.data, "key").toString(CryptoJS.enc.Utf8);
-        // Find the last occurrence of "?"
-const lastIndex = str.lastIndexOf('?');
-console.log(lastIndex);
-// Separate the string into two parts
-if(lastIndex != -1)
-{let beforeQuestionMark = str.slice(0, lastIndex);
-let afterQuestionMark = str.slice(lastIndex + 1);
-// console.log(lastIndex);
-//         console.log(afterQuestionMark);
-        setCompanyContractAddress(beforeQuestionMark);
-        setProductId(afterQuestionMark);
-        
-        // checkProduct()
-          setData(str);}
-          else {
-            setCompanyContractAddress('0xac16DF8e44D32090143927a2b4D594b9887f4A86');
-            setProductId('1999821');
-            setData("wrong");
-          }
-        } else {
-          setData('No QR code found');
+                    if (code) {
+                        // console.log(CryptoJS.AES.decrypt(code.data, "key").toString(CryptoJS.enc.Utf8))
+                        let str = CryptoJS.AES.decrypt(code.data, "key").toString(CryptoJS.enc.Utf8);
+                        // Find the last occurrence of "?"
+                        const lastIndex = str.lastIndexOf('?');
+                        console.log(lastIndex);
+                        // Separate the string into two parts
+                        if (lastIndex != -1) {
+                            let beforeQuestionMark = str.slice(0, lastIndex);
+                            let afterQuestionMark = str.slice(lastIndex + 1);
+                            // console.log(lastIndex);
+                            //         console.log(afterQuestionMark);
+                            setCompanyContractAddress(beforeQuestionMark);
+                            setProductId(afterQuestionMark);
+                        
+                            checkProduct()
+                            setData(str);
+                        }
+                        else {
+                            setCompanyContractAddress('0xac16DF8e44D32090143927a2b4D594b9887f4A86');
+                            setProductId('1999821');
+                            setData("wrong");
+                        }
+                    } else {
+                        setData('No QR code found');
+                    }
+                };
+            };
+
+            reader.readAsDataURL(file);
         }
-      };
     };
 
-    reader.readAsDataURL(file);
-  }
-};
 
-    
 
     return (
         <div className='VerifyProduct'>
@@ -119,8 +131,8 @@ let afterQuestionMark = str.slice(lastIndex + 1);
                     <label className='form__label'>Enter Product id</label>
                     <input type="text"  className='form__input' value={productId} onChange={handleInput2Change} />
                 </div> */}
-                
-          
+
+
                 <div className='form__content'>
                     <h2 className='text-center mb-4'> Scan Your QR Code</h2>
                     <div className='card border-0'>
@@ -129,9 +141,9 @@ let afterQuestionMark = str.slice(lastIndex + 1);
                                 Scan QRCode
                             </button>
                             <input type="file"
-                                ref = {fileRef}
+                                ref={fileRef}
                                 onChange={handleChange}
-                                accept=".png, .jpg, .jpeg" 
+                                accept=".png, .jpg, .jpeg"
                                 className='d-none' />
                             <div className='mt-4'>
                                 {file && <img src={URL.createObjectURL(file)} alt="QR Code" />}

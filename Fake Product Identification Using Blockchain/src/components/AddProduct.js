@@ -69,6 +69,7 @@ const AddProduct = ({account, central}) => {
             bgColor={"#ffffff"}
             level={"H"}
           />
+          
         );
 
 

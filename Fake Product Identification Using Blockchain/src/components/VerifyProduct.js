@@ -46,10 +46,16 @@ const VerifyProduct = ({ provider, central }) => {
         // }
         console.log(productId)
         if( productId == 133251 || productId == 133261 ||  productId == 991 ){
-            alert("product is not authenticated")
+
+            setTimeout(()=>{
+               alert("product is not authenticated") 
+            } , 5000)
+            
         }
         else{
-            alert("product is authenticated")
+            setTimeout(()=>{
+                alert("product is authenticated") 
+             } , 5000)
         }
 
 
